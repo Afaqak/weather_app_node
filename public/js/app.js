@@ -1,0 +1,1 @@
+console.log('Loaded the client side javascript');
