@@ -20,7 +20,7 @@ app.use(express.static(publicDirectory));
 app.get('',(req,res)=>{
     res.render('index',{
         name:'afaq',
-        title:'hbs'
+        title:'Weather'
     })
 })
 
@@ -41,10 +41,16 @@ app.get('/help',(req,res)=> {
 
 
 app.get('/weather',(req,res)=>{
+    if(!req.query.address)
+    {
+        return res.send({
+            errorMessage:'You must have an address'
+        })
+    }
     res.send({
-        weather:'sunny',
-        name:'afaq'
-    });
+        products:'hello products',
+        address:req.query.address
+    })
 })
 
 app.get('/help/*',(req,res)=>{
@@ -58,6 +64,17 @@ app.get('/help/*',(req,res)=>{
     },2000)
 })
 
+app.get('/products',(req,res)=>{
+    if(!req.query.search)
+    {
+        return res.send({
+            errorMessage:'There is a possible error with your query'
+        })
+    }
+    res.send({
+        products:[]
+    })
+})
 
 
 app.get('*',(req,res)=>{
