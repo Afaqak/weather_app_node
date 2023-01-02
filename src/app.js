@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 const hbs = require('hbs');
+const geoCode = require('./utils/geocode');
+const foreCast = require('./utils/forecast');
+
 
 //paths for express config
 const app = express(express);
@@ -46,10 +49,20 @@ app.get('/weather', (req, res) => {
             errorMessage: 'You must have an address'
         })
     }
-    res.send({
-        products: 'hello products',
-        address: req.query.address
-    })
+    else{
+        geoCode(req.query.address, (error, { latitude, longitude, location }={}) => {
+            if (error) return res.send({error:error});
+            foreCast(latitude, longitude, (error, foreCastdata) => {
+              if (error) return res.send({error});
+              res.send({
+                forecast:foreCastdata.current,
+                location,
+                address:req.query.address,
+                foreCastdata
+              })
+            })
+          })
+    }
 })
 
 app.get('/help/*', (req, res) => {
@@ -95,7 +108,7 @@ app.get('*', (req, res) => {
     })
 })
 
-app.listen(4000, () => {
+app.listen(8000, () => {
     console.log('running');
 });
 
